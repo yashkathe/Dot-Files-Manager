@@ -1,0 +1,9 @@
+# venv
+bin
+include
+lib
+lib64
+__pycache__
+
+# conf file
+d_manager.json
