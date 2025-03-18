@@ -6,6 +6,18 @@ from collections import defaultdict
 from hash_files import are_similar_files
 
 
+# Copy Files
+def copy_files(src, dist):
+    cp_process = subprocess.run(
+        f"cp {src} {dist}",
+        shell=True,
+        capture_output=True,
+        text=True,
+    )
+
+    return cp_process.stderr if cp_process.returncode != 0 else 0
+
+
 # Function to sync all Dot Files (not Directories)
 def check_file_diff(conf_file):
 
@@ -25,42 +37,41 @@ def check_file_diff(conf_file):
             return 1
 
         # start sync
-        print(f"starting to sync dot-files from {conf_file}\n")
+        print(f"\nStarting to Sync dot-files from {conf_file}\n")
         freq = defaultdict(int)
-        
+
         for df in load_conf["dot_files"]["files"]:
 
+            # if file mentioned in conf exists
             if os.path.exists(df):
 
                 emit_path = f"{emit_dir}/{ os.path.basename(df)}"
 
+                if not os.path.exists(emit_path):
 
-                if not os.path.exists(emit_path) or not are_similar_files(df, emit_path):
+                    print(f"changes detected -> {os.path.basename(df)}")
+                    copy_files(df, emit_path)
+                    freq["change"] += 1
 
-                    print(f"changes detected in {os.path.basename(df)}")
+                elif not are_similar_files(df, emit_path):
 
-                    # copy file from original directory to emit directory
-                    cpy = subprocess.run(
-                        f"cp {df} {emit_path}",
-                        shell=True,
-                        capture_output=True,
-                        text=True,
-                    )
-
-                    if cpy.returncode != 0:
-                        print(cpy.stderr)
-                        continue
-                    
-                    freq['change'] += 1
+                    print(f"new file detected -> {os.path.basename(df)}")
+                    copy_files(df, emit_path)
+                    freq["new"] += 1
 
                 else:
 
-                    freq['same'] += 1
+                    freq["same"] += 1
 
             else:
                 print(f"{df} not found")
 
-    print("\n=== Successfully Synced all the Files ===")
-    print(f"Total Files Scanned: {sum(freq.values())}")
-    print(f"Files re-uploaded: {freq['change']}")
-    print(f"Files un-touched: {freq['same']}")
+    print("\n=========================================")
+    print(f"✅ Total Files Scanned: {sum(freq.values())}")
+    print(f"└─✨ New Files: {freq['new']}")
+    print(f"└─✨ Re-uploaded Files: {freq['change']}")
+    print(f"└─✨ Un-touched Files: {freq['same']}")
+    print("=========================================\n")
+
+
+# Function to Sync all Files within Directories
