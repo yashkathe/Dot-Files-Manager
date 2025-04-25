@@ -29,12 +29,13 @@ def check_file_diff(conf_file):
         emit_dir = load_conf["emit_folder"]
 
         if not emit_dir:
+            "Emit Directory Not Found in Config File"
             return 1
 
         # check if dot files exist
         if not load_conf["dot_files"]["files"]:
             print(f"no dot files regiesterd in {conf_file}")
-            return 1
+            return 0
 
         # start sync
         print(f"\nStarting to Sync dot-files from {conf_file}\n")
@@ -73,5 +74,77 @@ def check_file_diff(conf_file):
     print(f"└─✨ Un-touched Files: {freq['same']}")
     print("=========================================\n")
 
+def check_folder_diff(conf_file):
 
-# Function to Sync all Files within Directories
+    with open(conf_file, "r") as rf:
+        load_conf = json.load(rf)
+        emit_dir = load_conf["emit_folder"]
+
+        if not emit_dir:
+            print("Emit Directory Not Found in Config File")
+            return 1
+
+        dirs = load_conf["dot_files"].get("directories", [])
+        if not dirs:
+            print(f"no directories registered in {conf_file}")
+            return 0
+
+        print(f"\nStarting to Sync dot-directories from {conf_file}\n")
+        dir_freq = defaultdict(int)
+        freq = defaultdict(int)
+
+        for src_dir in dirs:
+            if os.path.exists(src_dir):
+                dir_freq["total"] += 1
+                dir_name = os.path.basename(src_dir)
+                target_dir = os.path.join(emit_dir, dir_name)
+
+                # Copy entire directory if missing
+                if not os.path.exists(target_dir):
+                    print(f"new directory detected -> {dir_name}")
+                    cp = subprocess.run(
+                        f"cp -r {src_dir} {emit_dir}",
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                    )
+                    if cp.returncode != 0:
+                        print(cp.stderr)
+                    dir_freq["new"] += 1
+                    continue
+                else:
+                    dir_freq["existing"] += 1
+
+                # Otherwise, sync file-by-file
+                for root, _, files in os.walk(src_dir):
+                    for file_name in files:
+                        src_path = os.path.join(root, file_name)
+                        rel = os.path.relpath(root, src_dir)
+                        emit_sub = os.path.join(target_dir, rel)
+                        emit_path = os.path.join(emit_sub, file_name)
+
+                        os.makedirs(emit_sub, exist_ok=True)
+
+                        if not os.path.exists(emit_path):
+                            print(f"changes detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            copy_files(src_path, emit_path)
+                            freq["new"] += 1
+                        elif not are_similar_files(src_path, emit_path):
+                            print(f"new file detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            copy_files(src_path, emit_path)
+                            freq["change"] += 1
+                        else:
+                            freq["same"] += 1
+            else:
+                print(f"{src_dir} not found")
+
+    # summary
+    print("\n=========================================")
+    print(f"📂 Total Directories Processed: {dir_freq['total']}")
+    print(f"└─✨ New Directories: {dir_freq['new']}")
+    print(f"└─✨ Existing Directories: {dir_freq['existing']}")
+    print(f"✅ Total Files Scanned: {sum(freq.values())}")
+    print(f"└─✨ New Files: {freq['new']}")
+    print(f"└─✨ Re-uploaded Files: {freq['change']}")
+    print(f"└─✨ Un-touched Files: {freq['same']}")
+    print("=========================================\n")
