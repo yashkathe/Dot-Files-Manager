@@ -33,4 +33,7 @@ A simple script to **sync dotfiles and directories** to a central *emit_folder* 
    
    python3 src/dot_files_manager/main.py
    ```
+
+## Output
+
 ![output image](docs/output.png)

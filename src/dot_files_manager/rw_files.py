@@ -91,7 +91,7 @@ def check_folder_diff(conf_file):
 
         print(f"\nStarting to Sync dot-directories from {conf_file}\n")
         dir_freq = defaultdict(int)
-        freq = defaultdict(int)
+        freq = defaultdict(int)  # keys: new, change, same, deleted
 
         for src_dir in dirs:
             if os.path.exists(src_dir):
@@ -99,7 +99,7 @@ def check_folder_diff(conf_file):
                 dir_name = os.path.basename(src_dir)
                 target_dir = os.path.join(emit_dir, dir_name)
 
-                # Copy entire directory if missing
+                # If the whole directory is missing, copy it wholesale
                 if not os.path.exists(target_dir):
                     print(f"new directory detected -> {dir_name}")
                     cp = subprocess.run(
@@ -115,7 +115,7 @@ def check_folder_diff(conf_file):
                 else:
                     dir_freq["existing"] += 1
 
-                # Otherwise, sync file-by-file
+                # 1) Sync files from source -> emit
                 for root, _, files in os.walk(src_dir):
                     for file_name in files:
                         src_path = os.path.join(root, file_name)
@@ -126,25 +126,41 @@ def check_folder_diff(conf_file):
                         os.makedirs(emit_sub, exist_ok=True)
 
                         if not os.path.exists(emit_path):
-                            print(f"changes detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            print(f"new file detected -> {os.path.relpath(emit_path, emit_dir)}")
                             copy_files(src_path, emit_path)
                             freq["new"] += 1
                         elif not are_similar_files(src_path, emit_path):
-                            print(f"new file detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            print(f"changes detected -> {os.path.relpath(emit_path, emit_dir)}")
                             copy_files(src_path, emit_path)
                             freq["change"] += 1
                         else:
                             freq["same"] += 1
+
+                # 2) Detect & remove files that no longer exist in source
+                for root, _, files in os.walk(target_dir):
+                    for file_name in files:
+                        emit_path = os.path.join(root, file_name)
+                        rel = os.path.relpath(emit_path, target_dir)
+                        src_path = os.path.join(src_dir, rel)
+                        if not os.path.exists(src_path):
+                            print(f"deleted file detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            try:
+                                os.remove(emit_path)
+                                freq["deleted"] += 1
+                            except OSError as e:
+                                print(f"error deleting {emit_path}: {e}")
             else:
                 print(f"{src_dir} not found")
 
-    # summary
+    # final summary
+    total_files = sum(freq[k] for k in ("new", "change", "same", "deleted"))
     print("\n=========================================")
     print(f"📂 Total Directories Processed: {dir_freq['total']}")
     print(f"└─✨ New Directories: {dir_freq['new']}")
     print(f"└─✨ Existing Directories: {dir_freq['existing']}")
-    print(f"✅ Total Files Scanned: {sum(freq.values())}")
+    print(f"✅ Total Files Scanned: {total_files}")
     print(f"└─✨ New Files: {freq['new']}")
     print(f"└─✨ Re-uploaded Files: {freq['change']}")
     print(f"└─✨ Un-touched Files: {freq['same']}")
+    print(f"└─✨ Deleted Files: {freq['deleted']}")
     print("=========================================\n")
