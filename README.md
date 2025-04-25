@@ -13,7 +13,7 @@ A simple script to **sync dotfiles and directories** to a central *emit_folder* 
 
 1. Create a `config.json`:
 
-   ```json
+   ```text
    {
     // files and directories you want to track
     "dot_files": {
@@ -33,3 +33,4 @@ A simple script to **sync dotfiles and directories** to a central *emit_folder* 
    
    python3 src/dot_files_manager/main.py
    ```
+![output image](docs/output.png)
