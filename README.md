@@ -1,38 +1,34 @@
-# Dotfile Manager
+# Dotfiles Manager
 
 A simple script to **sync dotfiles and directories** to a central *emit_folder* for backup or management.
 
-## Features
-
-- Detects and copies **new** or **changed** dotfiles
-- Syncs entire **directories** if missing
-- Smart file comparison (uses hashes)
-- Logs with stats after sync
-
 ## Usage
 
-1. Create a `config.json`:
+### 1. Installation
 
-   ```text
-   {
-    // files and directories you want to track
-    "dot_files": {
-        "directories": [],
-        "files": []
+```bash
+make install
+```
+
+### 2. Populate d_manager.json
+
+```text
+"dot_files": {
+        "directories": [
+            *path of directories to track*
+        ],
+        "files": [
+            *path of files to track*
+        ]
     },
-    // where the dot files should be emitted
-    "emit_folder": "/home/yashkathe/dot_files_manager",
-    // github repository where dot files should be pushed
-    "git-repository": ""
-    }
-   ```
+    "emit_folder": *path of directory where all dot files & directories should be colleced*,
+```
 
-2. Run:
+### 3. Execute
 
-   ```bash
-   
-   python3 src/dot_files_manager/main.py
-   ```
+```bash
+make run
+```
 
 ## Output
 
