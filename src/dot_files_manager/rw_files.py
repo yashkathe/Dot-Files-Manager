@@ -3,7 +3,7 @@ import os
 import subprocess
 from collections import defaultdict
 
-from hash_files import are_similar_files
+from src.dot_files_manager.hash_files import are_similar_files
 
 
 # Copy Files
