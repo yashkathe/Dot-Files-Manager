@@ -52,13 +52,13 @@ def check_file_diff(conf_file):
 
                     print(f"changes detected -> {os.path.basename(df)}")
                     copy_files(df, emit_path)
-                    freq["change"] += 1
+                    freq["new"] += 1
 
                 elif not are_similar_files(df, emit_path):
 
                     print(f"new file detected -> {os.path.basename(df)}")
                     copy_files(df, emit_path)
-                    freq["new"] += 1
+                    freq["change"] += 1
 
                 else:
 
