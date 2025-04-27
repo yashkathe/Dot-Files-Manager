@@ -1,15 +1,21 @@
 # Dotfiles Manager
 
-A simple script to **sync dotfiles and directories** to a central *emit_folder* for backup or management.
-
 <div align="center">
+
+A simple script to **sync dotfiles and directories** to a central _emit_folder_ for backup or management.
 
 ![GitHub license](https://img.shields.io/github/license/yashkathe/Dot-Files-Manager)
 ![GitHub repo size](https://img.shields.io/github/repo-size/yashkathe/Dot-Files-Manager)
-![GitHub last commit](https://img.shields.io/github/last-commit/yashkathe/Dot-Files-Manager)
+![Platform linux](https://img.shields.io/badge/platform-Linux-important)
+![Top Language](https://img.shields.io/github/languages/top/yashkathe/Dot-Files-Manager)
+
+</div>
+
+<div align="center">
+
 ![GitHub issues](https://img.shields.io/github/issues/yashkathe/Dot-Files-Manager)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/yashkathe/Dot-Files-Manager)
-<!-- ![GitHub stars](https://img.shields.io/github/stars/yashkathe/Dot-Files-Manager?style=social) -->
+![GitHub last commit](https://img.shields.io/github/last-commit/yashkathe/Dot-Files-Manager)
 
 <img src="docs/output.png" alt="output image" width="650"/>
 
@@ -31,6 +37,10 @@ make install
 
 ### 3. Populate d_manager.json
 
+```bash
+make run ARGS=-e # edit the config file
+```
+
 ```text
 "dot_files": {
         "directories": [
@@ -46,9 +56,15 @@ make install
 ### 4. Execute
 
 ```bash
-make run
+make run ARGS=-r # run the main file
+```
+
+### HELP
+
+```bash
+make run ARGS=-h # program manual
 ```
 
 ---
 
-Everytime you change a dot file you can just run make run to sync that dot file with emit directory
+Everytime you update a dot file / config file you can just run **_make run_** to sync all dot files with your emit directory

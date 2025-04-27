@@ -1,5 +1,9 @@
 import json
 import os
+import shutil
+import subprocess
+
+from src.dot_files_manager.hash_files import are_similar_files, get_file_hash
 
 user_home = os.path.expanduser("~")
 
@@ -53,3 +57,42 @@ def check_json_config(conf_file):
                 print(f"No Entries found for Dot {entry}")
 
     return 0
+
+
+def edit_config_file(conf_file):
+
+    # __file__ - path of current executing file
+    config_path = os.path.join(os.path.dirname(__file__), f"../../{conf_file}")
+
+    if not os.path.isfile(config_path):
+        print(f"Config file '{conf_file}' not found!")
+        print("Please run: make install")
+        return 1
+
+    prev_hash = get_file_hash(config_path)
+
+    # load config file in text_editor
+
+    text_editors = ["nano", "vim", "code"]
+
+    for text_editor in text_editors:
+
+        if shutil.which(text_editor):
+            process = subprocess.run(
+                [text_editor, config_path],
+            )
+
+            if process.returncode == 0:
+                new_hash = get_file_hash(config_path)
+
+                if prev_hash != new_hash:
+                    print("Config File Updated")
+                else:
+                    print("No Changes to Config File")
+                return 0
+            else:
+                print(f"failed to open config file with {text_editor}")
+                return 1
+
+    print(f"No Text Editors found: {','.join(text_editors)}")
+    return 1
