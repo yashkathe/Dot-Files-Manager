@@ -1,7 +1,13 @@
 .PHONY: run install
 
-run:
-	python3 -m src.dot_files_manager.main $(ARGS)
+run sync:
+	python3 -m src.dot_files_manager.main --run
+
+edit:
+	python3 -m src.dot_files_manager.main --edit
+
+help:
+	python3 -m src.dot_files_manager.main --help
 
 install:
 	pip3 install -r requirements.txt

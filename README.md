@@ -38,7 +38,7 @@ make install
 ### 3. Populate d_manager.json
 
 ```bash
-make run ARGS=-e # edit the config file
+make edit # edit the config file
 ```
 
 ```text
@@ -56,13 +56,13 @@ make run ARGS=-e # edit the config file
 ### 4. Execute
 
 ```bash
-make run ARGS=-r # run the main file
+make sync # run the main file
 ```
 
 ### HELP
 
 ```bash
-make run ARGS=-h # program manual
+make help # program manual
 ```
 
 ---
