@@ -23,7 +23,7 @@ def remote_sync(conf_file):
         load_conf = json.load(rf)
 
         emit_dir = load_conf["emit_folder"]
-        git_repo = load_conf["git_repository"]
+        # git_repo = load_conf["git_repository"]
 
     os.chdir(emit_dir)
 
