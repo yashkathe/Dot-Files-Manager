@@ -50,13 +50,13 @@ def check_file_diff(conf_file):
 
                 if not os.path.exists(emit_path):
 
-                    print(f"changes detected -> {os.path.basename(df)}")
+                    print(f"new file detected -> {os.path.basename(df)}")
                     copy_files(df, emit_path)
                     freq["new"] += 1
 
                 elif not are_similar_files(df, emit_path):
 
-                    print(f"new file detected -> {os.path.basename(df)}")
+                    print(f"changes detected-> {os.path.basename(df)}")
                     copy_files(df, emit_path)
                     freq["change"] += 1
 
@@ -73,6 +73,7 @@ def check_file_diff(conf_file):
     print(f"└─✨ Re-uploaded Files: {freq['change']}")
     print(f"└─✨ Un-touched Files: {freq['same']}")
     print("=========================================\n")
+
 
 def check_folder_diff(conf_file):
 
@@ -126,11 +127,15 @@ def check_folder_diff(conf_file):
                         os.makedirs(emit_sub, exist_ok=True)
 
                         if not os.path.exists(emit_path):
-                            print(f"new file detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            print(
+                                f"new file detected -> {os.path.relpath(emit_path, emit_dir)}"
+                            )
                             copy_files(src_path, emit_path)
                             freq["new"] += 1
                         elif not are_similar_files(src_path, emit_path):
-                            print(f"changes detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            print(
+                                f"changes detected -> {os.path.relpath(emit_path, emit_dir)}"
+                            )
                             copy_files(src_path, emit_path)
                             freq["change"] += 1
                         else:
@@ -143,7 +148,9 @@ def check_folder_diff(conf_file):
                         rel = os.path.relpath(emit_path, target_dir)
                         src_path = os.path.join(src_dir, rel)
                         if not os.path.exists(src_path):
-                            print(f"deleted file detected -> {os.path.relpath(emit_path, emit_dir)}")
+                            print(
+                                f"deleted file detected -> {os.path.relpath(emit_path, emit_dir)}"
+                            )
                             try:
                                 os.remove(emit_path)
                                 freq["deleted"] += 1
