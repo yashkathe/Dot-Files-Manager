@@ -72,7 +72,6 @@ def edit_config_file(conf_file):
     prev_hash = get_file_hash(config_path)
 
     # load config file in text_editor
-
     text_editors = ["nano", "vim", "code"]
 
     for text_editor in text_editors:
@@ -87,9 +86,12 @@ def edit_config_file(conf_file):
 
                 if prev_hash != new_hash:
                     print("Config File Updated")
+
                 else:
                     print("No Changes to Config File")
+
                 return 0
+
             else:
                 print(f"failed to open config file with {text_editor}")
                 return 1

@@ -3,12 +3,13 @@ import argparse
 from src.dot_files_manager.config_file import (check_json_config,
                                                create_json_config,
                                                edit_config_file)
+from src.dot_files_manager.remote_sync import remote_sync
 from src.dot_files_manager.rw_files import check_file_diff, check_folder_diff
 
 # argparse setup
 
 parser = argparse.ArgumentParser(
-    description="A simple script to sync dotfiles and directories to a central emit_folder for backup or management."
+    description="A simple script to sync dotfiles and directories to a central `emit_folder` for backup or management."
 )
 
 parser.add_argument(
@@ -18,6 +19,13 @@ parser.add_argument(
     "-r",
     "--run",
     help="sync the dot files with your emit directory",
+    action="store_true",
+)
+
+parser.add_argument(
+    "-rs",
+    "--remote-sync",
+    help="sync emit directory with your github/gitlab repository",
     action="store_true",
 )
 
@@ -38,8 +46,12 @@ if __name__ == "__main__":
         check_file_diff(json_config_filename)
         check_folder_diff(json_config_filename)
 
+    elif args.remote_sync:
+        check_json_config(json_config_filename)
+        remote_sync(json_config_filename)
+
     elif args.h:
-        parser.print_usage()
+        parser.print_help()
 
     else:
         parser.print_help()

@@ -3,11 +3,12 @@ import os
 
 user_home = os.path.expanduser("~")
 
+
 # create emit directory and JSON config file
 def create_json_config(conf_file):
 
     emit_folder_name = "dot_files_manager"
-    
+
     # create directory for emit folder
     os.makedirs(os.path.join(user_home, emit_folder_name), exist_ok=True)
 

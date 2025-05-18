@@ -3,6 +3,13 @@
 run sync:
 	python3 -m src.dot_files_manager.main --run
 
+remote-sync:
+	python3 -m src.dot_files_manager.main --remote-sync
+
+full-sync:
+	python3 -m src.dot_files_manager.main --run
+	python3 -m src.dot_files_manager.main --remote-sync
+
 edit:
 	python3 -m src.dot_files_manager.main --edit
 
