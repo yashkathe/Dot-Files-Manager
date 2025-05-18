@@ -7,6 +7,15 @@ user_home = os.path.expanduser("~")
 # create emit directory and JSON config file
 def create_json_config(conf_file):
 
+    emit_folder_name = ""
+
+    with open(conf_file, "r") as rf:
+
+        emit_dir = json.load(rf)
+        emit_folder_name = os.path.basename(emit_dir)
+
+    print(emit_folder_name)
+
     # skeleton for config file
     data = {
         "dot_files": {"directories": [], "files": []},
@@ -31,7 +40,11 @@ def check_json_config(conf_file):
 
     with open(conf_file, "r") as rf:
 
+        print(rf)
+
         load_conf = json.load(rf)
+
+        print(load_conf)
 
         # error & exit - if emit_directory is empty
         for emit_f in load_conf["emit_folder"]:
