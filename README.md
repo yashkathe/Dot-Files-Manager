@@ -37,6 +37,8 @@ make install
 
 ### 3. Populate d_manager.json
 
+IMPORTANT: It is expected that the emit_directory should be located in current user's home directory
+
 ```bash
 make edit # edit the config file
 ```
@@ -55,8 +57,22 @@ make edit # edit the config file
 
 ### 4. Execute
 
+For local changes only when you want to collect all the given dot files and collect them in emit directory
+
 ```bash
-make sync # run the main file
+make sync
+```
+
+For remote changes when you want to push all your dot files to your remote repository
+
+```bash
+make remote-sync
+```
+
+Performs both the above operation together
+
+```bash
+make full-sync
 ```
 
 ### HELP
